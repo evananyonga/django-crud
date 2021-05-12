@@ -23,3 +23,15 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class User(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name="Post")
+    user = models.TextField('username')
+    date_added = models.DateTimeField('date_added', auto_now_add=True)
+
+    class Meta:
+        ordering = ['-date_added']
+
+    def __str__(self):
+        return self.user
