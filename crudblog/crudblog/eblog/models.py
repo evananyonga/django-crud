@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
+from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
 
@@ -25,13 +26,23 @@ class Post(models.Model):
         return self.title
 
 
-class User(models.Model):
+class User(AbstractUser):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name="Post")
-    user = models.TextField('username')
+    email = models.EmailField(_("Email address"),
+                              unique=True,
+                              error_messages={
+                                  "unique": _("This email address is already in use.")
+                              },
+                              )
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
+    password = models.CharField(max_length=200)
     date_added = models.DateTimeField('date_added', auto_now_add=True)
 
-    class Meta:
-        ordering = ['-date_added']
 
-    def __str__(self):
-        return self.user
+class Meta:
+    ordering = ['-date_added']
+
+
+def __str__(self):
+    return self.user
